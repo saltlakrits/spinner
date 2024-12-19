@@ -4,15 +4,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define K 1000
-
-#define GRAPHICAL_X_MULTIPLIER 2.5
-
-// if 1, white bg, else black bg
-#define WHITE_BACKGROUND 1
-
-#define MIN(A, B) ((A < B) ? A : B)
-
 Point calc_point(const int line_len, double *rad) {
   // rad will grow infinitely, so we will keep
   // modulo'ing it to ensure it resets appropriately
@@ -47,7 +38,7 @@ PointBuffer create_pb(int buffer_len) {
 
 void append_pb(PointBuffer *pb, Point new_point) {
 
-  // if len isn't 4 yet, inc len
+  // if buffers still growing, inc len
   if (pb->len < pb->max_len) {
     pb->len += 1;
   }
@@ -69,6 +60,9 @@ void append_pb(PointBuffer *pb, Point new_point) {
 int nc_col(double v) { return (int)(v / 256 * 1000); }
 
 void redef_color_pair(double rad) {
+  // shifts colors along with radians changing,
+  // shifts between (256, 64, 128) and (0, 256, 128)
+  // (light green -> pinkish -> light green -> ...)
   double red = fabs(256.0 * sin(rad / 2));
   double green = 256.0 - fabs(192.0 * sin(rad / 2));
   const double blue = 128;
